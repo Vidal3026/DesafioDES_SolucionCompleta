@@ -1,0 +1,55 @@
+﻿using Gestion.BL.Interfaces;
+using Gestion.Entities.DTO;
+using Microsoft.AspNetCore.Mvc;
+using System.Net;
+
+namespace Gestion.API.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class EventoController(IEventoService service) : ControllerBase
+    {
+        [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<EventoDto>), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> Get()
+        {
+            var result = await service.GetEventosAsync();
+            return Ok(result);
+        }
+
+        [HttpGet("{id}")]
+        [ProducesResponseType(typeof(EventoDto), (int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        public async Task<IActionResult> Get(int id)
+        {
+            var result = await service.GetEventoByIdAsync(id);
+            return result != null ? Ok(result) : NotFound();
+        }
+
+        [HttpPost]
+        [ProducesResponseType(typeof(EventoDto), (int)HttpStatusCode.Created)]
+        public async Task<IActionResult> Post([FromBody] EventoDto model)
+        {
+            var result = await service.InsertEventoAsync(model);
+            return CreatedAtAction(nameof(Get), new { id = result.Codigo }, result);
+        }
+
+        [HttpPut("{id}")]
+        [ProducesResponseType((int)HttpStatusCode.NoContent)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        public async Task<IActionResult> Put(int id, [FromBody] EventoDto model)
+        {
+            var result = await service.UpdateEventoAsync(id, model);
+            return result != null ? NoContent() : NotFound();
+        }
+
+        [HttpDelete("{id}")]
+        [ProducesResponseType((int)HttpStatusCode.NoContent)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var result = await service.DeleteEventoAsync(id);
+            return result ? NoContent() : NotFound();
+        }
+    }
+}

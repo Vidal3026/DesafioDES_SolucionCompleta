@@ -1,0 +1,8 @@
+<Solution>
+  <Project Path="../Gestion.BL/Gestion.BL.csproj" />
+  <Project Path="../Gestion.Common/Gestion.Common.csproj" />
+  <Project Path="../Gestion.DAL/Gestion.DAL.csproj" />
+  <Project Path="../Gestion.Entities/Gestion.Entities.csproj" />
+  <Project Path="../Gestion.Gateway/Gestion.Gateway.csproj" />
+  <Project Path="Gestión.API.csproj" />
+</Solution>
