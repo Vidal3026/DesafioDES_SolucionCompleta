@@ -15,6 +15,7 @@ builder.Services.AddDistributedMemoryCache();
 
 builder.Services.AddRepositoryConnector();
 builder.Services.AddServiceConnector();
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 

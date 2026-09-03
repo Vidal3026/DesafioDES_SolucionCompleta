@@ -5,10 +5,10 @@ using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Cargar la configuración de Ocelot
+// 1. Cargar la configuración de Ocelot
 builder.Configuration.AddJsonFile("ocelot.json", optional: false, reloadOnChange: true);
 
-// Registrar Ocelot y CacheManager
+// 2. Registrar servicios de Ocelot y CacheManager
 builder.Services.AddOcelot()
     .AddCacheManager(x =>
     {
@@ -19,6 +19,7 @@ builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
+// 3. Documentación OpenAPI y Scalar (debe procesarse antes del ruteo de Ocelot)
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
@@ -30,18 +31,22 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-// MIDDLEWARE CLAVE: Si la petición no trae 'X-Client-Id', le asigna la IP del cliente
+// 4. Middleware personalizado: Garantizar encabezado 'X-Client-Id'
 app.Use(async (context, next) =>
 {
     if (!context.Request.Headers.ContainsKey("X-Client-Id"))
     {
-        var clientIp = context.Connection.RemoteIpAddress?.ToString() ?? "anon-client";
+        // Si viene detrás de un proxy/docker, intenta tomar la IP original de X-Forwarded-For
+        string clientIp = context.Request.Headers["X-Forwarded-For"].FirstOrDefault()
+            ?? context.Connection.RemoteIpAddress?.ToString()
+            ?? "anon-client";
+
         context.Request.Headers["X-Client-Id"] = clientIp;
     }
     await next();
 });
 
-// Middleware de Ocelot
+// 5. Middleware de Ocelot (SIEMPRE debe ir al final antes de app.Run)
 await app.UseOcelot();
 
 app.Run();

@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: gestion_sqlserver
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=TUN3sahur!
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+    networks:
+      - gestion_net
+
+  redis:
+    image: redis:alpine
+    container_name: gestion_redis
+    ports:
+      - "6379:6379"
+    networks:
+      - gestion_net
+
+  gestion.api:
+    build:
+      context: .
+      dockerfile: Gestión.API/Dockerfile
+    container_name: gestion_api
+    ports:
+      - "7117:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - AppSettings__ConnectionString=Server=sqlserver;Database=GestionEventos;User Id=sa;Password=TUN3sahur!;TrustServerCertificate=True;
+      - AppSettings__RedisConnection=redis:6379
+    depends_on:
+      - sqlserver
+      - redis
+    networks:
+      - gestion_net
+
+  gestion.gateway:
+    build:
+      context: .
+      dockerfile: Gestion.Gateway/Dockerfile
+    container_name: gestion_gateway
+    ports:
+      - "7006:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    depends_on:
+      - gestion.api
+    networks:
+      - gestion_net
+
+volumes:
+  sqlserver_data:
+
+networks:
+  gestion_net:
+    driver: bridge

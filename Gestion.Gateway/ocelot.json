@@ -2,11 +2,11 @@
   "Routes": [
     {
       "DownstreamPathTemplate": "/api/Evento/{everything}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 7117
+          "Host": "gestion.api",
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/gateway/Evento/{everything}",
@@ -25,11 +25,11 @@
     },
     {
       "DownstreamPathTemplate": "/api/Participante/{everything}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 7117
+          "Host": "gestion.api",
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/gateway/Participante/{everything}",
@@ -48,11 +48,11 @@
     },
     {
       "DownstreamPathTemplate": "/api/Organizador/{everything}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 7117
+          "Host": "gestion.api",
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/gateway/Organizador/{everything}",
@@ -71,7 +71,7 @@
     }
   ],
   "GlobalConfiguration": {
-    "BaseUrl": "https://localhost:7006",
+    "BaseUrl": "http://localhost:7006",
     "RateLimitOptions": {
       "ClientIdHeader": "X-Client-Id",
       "QuotaExceededMessage": "Has superado el limite de 10 peticiones por minuto.",

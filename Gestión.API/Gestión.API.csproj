@@ -4,6 +4,8 @@
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <!-- Desactiva la generación estática de delegados si hay desfase en .NET 10 -->
+    <EnableRequestDelegateGenerator>false</EnableRequestDelegateGenerator>
   </PropertyGroup>
 
   <ItemGroup>
